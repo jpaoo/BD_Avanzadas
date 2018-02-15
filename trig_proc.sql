@@ -185,3 +185,21 @@ create or replace procedure PROYECTO_UPDATE_TLF_CLIENTE(
         raise_application_error(-2000, SUBSTR(SQLERRM, 1, 100));
       end;
     end;
+
+-- TRIGGER DESCUENTO DE 1000 COMPRAS
+
+create or replace trigger PROYECTO_DESCUENTO_COMPRA1000
+before 
+    insert on PROYECTO_COMPRAS
+for each row
+declare 
+    v_cant NUMBER;
+begin
+    select count(*) into v_cant from proyecto_compras;
+    if ( mod((v_cant + 1),1000) = 0 ) then
+        :new.monto := :new.monto * 0.9;
+    end if;
+end PROYECTO_DESCUENTO_COMPRA1000;
+
+
+
