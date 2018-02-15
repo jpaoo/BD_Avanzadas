@@ -166,3 +166,22 @@ create or replace procedure PROYECTO_UPDATE_MAIL_CLIENTE(
         raise_application_error(-2000, SUBSTR(SQLERRM, 1, 100));
       end;
     end;
+
+
+    ---- UPDATE TELEFONO CLIENTE
+create or replace procedure PROYECTO_UPDATE_TLF_CLIENTE(
+    RFC_CLIENTE_CAMBIAR VARCHAR,
+    TLF_NUEVO VARCHAR) as
+  begin
+    begin
+      update PROYECTO_CLIENTES set TELEFONO = TLF_NUEVO where RFC_CLIENTE = RFC_CLIENTE_CAMBIAR;
+      update PROYECTO_CLIENTES@kr set TELEFONO = TLF_NUEVO where RFC_CLIENTE = RFC_CLIENTE_CAMBIAR;
+      update PROYECTO_CLIENTES@mm set TELEFONO = TLF_NUEVO where RFC_CLIENTE = RFC_CLIENTE_CAMBIAR;
+      update PROYECTO_CLIENTES@mc set TELEFONO = TLF_NUEVO where RFC_CLIENTE = RFC_CLIENTE_CAMBIAR;
+      commit;
+    exception
+      when others then
+        rollback;
+        raise_application_error(-2000, SUBSTR(SQLERRM, 1, 100));
+      end;
+    end;
