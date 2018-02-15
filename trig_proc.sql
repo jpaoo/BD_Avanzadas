@@ -11,7 +11,7 @@ create or replace procedure PROYECTO_NUEVO_LIBRO(
     PAGINAS	NUMBER,
     PRECIO	NUMBER,
     ANIO	NUMBER) as
-    
+
 begin
     begin
         insert into proyecto_libros values (id_libro, isbn, id_autor, id_genero, id_editorial, titulo, paginas, precio, anio);
@@ -107,3 +107,62 @@ begin
             raise_application_error(-20000, SUBSTR(SQLERRM, 1, 100));
     end;
 end;
+
+
+
+--- UPDATE PRECIO LIBRO
+
+create or replace procedure PROYECTO_UPDATE_PRECIO_LIBRO(
+  NUEVO_NOMBRE VARCHAR2,
+  NUEVO_PRECIO NUMBER) as
+begin
+  begin
+    update proyecto_libros set precio = NUEVO_PRECIO where TITULO = NUEVO_NOMBRE;
+    update proyecto_libros@kr set precio = NUEVO_PRECIO where TITULO = NUEVO_NOMBRE;
+    update proyecto_libros@mm set precio = NUEVO_PRECIO where TITULO = NUEVO_NOMBRE;
+    update proyecto_libros@mc set precio = NUEVO_PRECIO where TITULO = NUEVO_NOMBRE;
+    commit;
+  exception
+    when others then
+      rollback;
+      raise_application_error(-2000, SUBSTR(SQLERRM, 1, 100));
+    end;
+  end;
+
+
+  --- UPDATE COSTO LIBRO
+
+create or replace procedure PROYECTO_UPDATE_COSTO_LIBRO(
+    ID_LIBRO_CHANGE NUMBER,
+    NUEVO_PRECIO NUMBER) as
+  begin
+    begin
+      update PROYECTO_LIBROSPROVEEDOR set costo = NUEVO_PRECIO where ID_LIBRO = ID_LIBRO_CHANGE;
+      update PROYECTO_LIBROSPROVEEDOR@kr set costo = NUEVO_PRECIO where ID_LIBRO = ID_LIBRO_CHANGE;
+      update PROYECTO_LIBROSPROVEEDOR@mm set costo = NUEVO_PRECIO where ID_LIBRO = ID_LIBRO_CHANGE;
+      update PROYECTO_LIBROSPROVEEDOR@mc set costo = NUEVO_PRECIO where ID_LIBRO = ID_LIBRO_CHANGE;
+      commit;
+    exception
+      when others then
+        rollback;
+        raise_application_error(-2000, SUBSTR(SQLERRM, 1, 100));
+      end;
+    end;
+
+---- UPDATE MAIL CLIENTE
+create or replace procedure PROYECTO_UPDATE_MAIL_CLIENTE(
+    RFC_CLIENTE_CAMBIAR VARCHAR,
+    EMAIL_NUEVO VARCHAR) as
+  begin
+    begin
+      update PROYECTO_CLIENTES set EMAIL = EMAIL_NUEVO where RFC_CLIENTE = RFC_CLIENTE_CAMBIAR;
+      update PROYECTO_CLIENTES@kr set EMAIL = EMAIL_NUEVO where RFC_CLIENTE = RFC_CLIENTE_CAMBIAR;
+      update PROYECTO_CLIENTES@mm set EMAIL = EMAIL_NUEVO where RFC_CLIENTE = RFC_CLIENTE_CAMBIAR;
+      update PROYECTO_CLIENTES@mc set EMAIL = EMAIL_NUEVO where RFC_CLIENTE = RFC_CLIENTE_CAMBIAR;
+      commit;
+    exception
+      when others then
+        rollback;
+        raise_application_error(-2000, SUBSTR(SQLERRM, 1, 100));
+      end;
+    end;
