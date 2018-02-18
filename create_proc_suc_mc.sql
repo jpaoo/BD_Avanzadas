@@ -15,7 +15,7 @@ create or replace procedure PROYECTO_NUEVO_LIBRO(
 begin
     begin
         insert into proyecto_libros values (id_libro, isbn, id_autor, id_genero, id_editorial, titulo, paginas, precio, anio);
-        insert into proyecto_libros@mc values (id_libro, isbn, id_autor, id_genero, id_editorial, titulo, paginas, precio, anio);
+        insert into proyecto_libros@mm values (id_libro, isbn, id_autor, id_genero, id_editorial, titulo, paginas, precio, anio);
         insert into proyecto_libros@kr values (id_libro, isbn, id_autor, id_genero, id_editorial, titulo, paginas, precio, anio);
         insert into proyecto_libros@jp values (id_libro, isbn, id_autor, id_genero, id_editorial, titulo, paginas, precio, anio);
         commit;
@@ -34,7 +34,7 @@ create or replace procedure PROYECTO_NUEVO_GENERO(
 begin
     begin
         insert into proyecto_generos values (id_genero, nombre);
-        insert into proyecto_generos@mc values (id_genero, nombre);
+        insert into proyecto_generos@mm values (id_genero, nombre);
         insert into proyecto_generos@kr values (id_genero, nombre);
         insert into proyecto_generos@jp values (id_genero, nombre);
         commit;
@@ -58,7 +58,7 @@ create or replace procedure PROYECTO_NUEVO_PROVEEDOR(
 begin
     begin
         insert into proyecto_proveedores values (id_proveedor, rfc_proveedor, nombre, email, direccion, telefono, cantidadmax);
-        insert into proyecto_proveedores@mc values (id_proveedor, rfc_proveedor, nombre, email, direccion, telefono, cantidadmax);
+        insert into proyecto_proveedores@mm values (id_proveedor, rfc_proveedor, nombre, email, direccion, telefono, cantidadmax);
         insert into proyecto_proveedores@kr values (id_proveedor, rfc_proveedor, nombre, email, direccion, telefono, cantidadmax);
         insert into proyecto_proveedores@jp values (id_proveedor, rfc_proveedor, nombre, email, direccion, telefono, cantidadmax);
         commit;
@@ -78,7 +78,7 @@ create or replace procedure PROYECTO_NUEVA_EDITORIAL(
 begin
     begin
         insert into proyecto_editoriales values (id_editorial, nombre, pais);
-        insert into proyecto_editoriales@mc values (id_editorial, nombre, pais);
+        insert into proyecto_editoriales@mm values (id_editorial, nombre, pais);
         insert into proyecto_editoriales@kr values (id_editorial, nombre, pais);
         insert into proyecto_editoriales@jp values (id_editorial, nombre, pais);
         commit;
@@ -99,7 +99,7 @@ begin
         insert into proyecto_autores values (id_autor, nombre);
         insert into proyecto_autores@jp values (id_autor, nombre);
         insert into proyecto_autores@kr values (id_autor, nombre);
-        insert into proyecto_autores@mc values (id_autor, nombre);
+        insert into proyecto_autores@mm values (id_autor, nombre);
         commit;
     exception
         when others then
@@ -120,7 +120,7 @@ begin
     update proyecto_libros set precio = NUEVO_PRECIO where TITULO = NUEVO_NOMBRE;
     update proyecto_libros@kr set precio = NUEVO_PRECIO where TITULO = NUEVO_NOMBRE;
     update proyecto_libros@jp set precio = NUEVO_PRECIO where TITULO = NUEVO_NOMBRE;
-    update proyecto_libros@mc set precio = NUEVO_PRECIO where TITULO = NUEVO_NOMBRE;
+    update proyecto_libros@mm set precio = NUEVO_PRECIO where TITULO = NUEVO_NOMBRE;
     commit;
   exception
     when others then
@@ -140,7 +140,7 @@ create or replace procedure PROYECTO_UPDATE_COSTO_LIBRO(
       update PROYECTO_LIBROSPROVEEDOR set costo = NUEVO_PRECIO where ID_LIBRO = ID_LIBRO_CHANGE;
       update PROYECTO_LIBROSPROVEEDOR@kr set costo = NUEVO_PRECIO where ID_LIBRO = ID_LIBRO_CHANGE;
       update PROYECTO_LIBROSPROVEEDOR@jp set costo = NUEVO_PRECIO where ID_LIBRO = ID_LIBRO_CHANGE;
-      update PROYECTO_LIBROSPROVEEDOR@mc set costo = NUEVO_PRECIO where ID_LIBRO = ID_LIBRO_CHANGE;
+      update PROYECTO_LIBROSPROVEEDOR@mm set costo = NUEVO_PRECIO where ID_LIBRO = ID_LIBRO_CHANGE;
       commit;
     exception
       when others then
@@ -158,7 +158,7 @@ create or replace procedure PROYECTO_UPDATE_MAIL_CLIENTE(
       update PROYECTO_CLIENTES set EMAIL = EMAIL_NUEVO where RFC_CLIENTE = RFC_CLIENTE_CAMBIAR;
       update PROYECTO_CLIENTES@kr set EMAIL = EMAIL_NUEVO where RFC_CLIENTE = RFC_CLIENTE_CAMBIAR;
       update PROYECTO_CLIENTES@jp set EMAIL = EMAIL_NUEVO where RFC_CLIENTE = RFC_CLIENTE_CAMBIAR;
-      update PROYECTO_CLIENTES@mc set EMAIL = EMAIL_NUEVO where RFC_CLIENTE = RFC_CLIENTE_CAMBIAR;
+      update PROYECTO_CLIENTES@mm set EMAIL = EMAIL_NUEVO where RFC_CLIENTE = RFC_CLIENTE_CAMBIAR;
       commit;
     exception
       when others then
@@ -176,7 +176,7 @@ create or replace procedure PROYECTO_UPDATE_TLF_CLIENTE(
     begin
       update PROYECTO_CLIENTES set TELEFONO = TLF_NUEVO where RFC_CLIENTE = RFC_CLIENTE_CAMBIAR;
       update PROYECTO_CLIENTES@kr set TELEFONO = TLF_NUEVO where RFC_CLIENTE = RFC_CLIENTE_CAMBIAR;
-      update PROYECTO_CLIENTES@mc set TELEFONO = TLF_NUEVO where RFC_CLIENTE = RFC_CLIENTE_CAMBIAR;
+      update PROYECTO_CLIENTES@mm set TELEFONO = TLF_NUEVO where RFC_CLIENTE = RFC_CLIENTE_CAMBIAR;
       update PROYECTO_CLIENTES@jp set TELEFONO = TLF_NUEVO where RFC_CLIENTE = RFC_CLIENTE_CAMBIAR;
       commit;
     exception
