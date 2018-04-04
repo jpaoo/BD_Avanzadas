@@ -61,3 +61,133 @@ as begin
 
 	commit;
 end actualiza_proveedores;
+
+# Hechos métodos pago
+
+create sequence seq_h_metodospago;
+
+create or replace view metodos_pago as
+	select mp.id_metodo_pago, compra.d_comprapk, tiempo.id_tiempo, sum(compra.total)  "SUMA"
+	from d_tiempo tiempo, d_metodos_pago mp, d_compra compra
+	where to_date(compra.fecha) = to_date(tiempo.fecha) and mp.id_metodo_pago = compra.id_metodo_pago
+	group by (mp.id_metodo_pago, compra.d_comprapk, tiempo.id_tiempo);
+
+# Tabla de hechos métodos pago
+
+CREATE TABLE H_METODOS_PAGO 
+(
+  ID_METODO_HECHOS NUMBER NOT NULL 
+, ID_METODO_PAGO NUMBER NOT NULL 
+, ID_COMPRAPK NUMBER NOT NULL 
+, ID_TIEMPO NUMBER NOT NULL 
+, SUMA NUMBER NOT NULL 
+, CONSTRAINT H_METODOS_PAGO_PK PRIMARY KEY 
+  (
+    ID_METODO_HECHOS 
+  )
+  USING INDEX 
+  (
+      CREATE UNIQUE INDEX H_METODOS_PAGO_PK ON H_METODOS_PAGO (ID_METODO_HECHOS ASC) 
+      LOGGING 
+      TABLESPACE USERS 
+      PCTFREE 10 
+      INITRANS 2 
+      STORAGE 
+      ( 
+        BUFFER_POOL DEFAULT 
+      ) 
+      NOPARALLEL 
+  )
+  ENABLE 
+) 
+LOGGING 
+TABLESPACE USERS 
+PCTFREE 10 
+INITRANS 1 
+STORAGE 
+( 
+  BUFFER_POOL DEFAULT 
+) 
+NOCOMPRESS 
+NOPARALLEL;
+
+ALTER TABLE H_METODOS_PAGO
+ADD CONSTRAINT H_METODOS_PAGO_FK1 FOREIGN KEY
+(
+  ID_COMPRAPK 
+)
+REFERENCES D_COMPRA
+(
+  D_COMPRAPK 
+)
+ENABLE;
+
+ALTER TABLE H_METODOS_PAGO
+ADD CONSTRAINT H_METODOS_PAGO_FK2 FOREIGN KEY
+(
+  ID_TIEMPO 
+)
+REFERENCES D_TIEMPO
+(
+  ID_TIEMPO 
+)
+ENABLE;
+
+ALTER TABLE H_METODOS_PAGO
+ADD CONSTRAINT H_METODOS_PAGO_FK3 FOREIGN KEY
+(
+  ID_METODO_PAGO 
+)
+REFERENCES D_METODOS_PAGO
+(
+  ID_METODO_PAGO 
+)
+ENABLE;
+
+# procedimiento para actualizar tabla de hechos de metodos_pago
+
+    
+create or replace procedure actualiza_metodos_pago_hechos(
+	fecha_inicial in date,
+	fecha_final in date
+) as 
+vFechaInicial date;
+vFechaFinal date;
+
+
+v_id_metodo_hechos number;
+cursor c_metodos_pago is
+	select mp.ID_METODO_HECHOS from h_metodos_pago mp, d_tiempo
+	where mp.id_tiempo = d_tiempo.id_tiempo and d_tiempo.fecha between fecha_inicial and fecha_final; 
+
+cursor c_metodospago is
+	select mp.id_metodo_pago, mp.d_comprapk, mp.id_tiempo, mp.suma from metodos_pago mp, d_tiempo
+	where mp.id_tiempo = d_tiempo.id_tiempo and d_tiempo.fecha between fecha_inicial and fecha_final;
+
+v_metodo_pagos c_metodospago%rowtype;
+
+begin
+
+	vFechaInicial := fecha_inicial;
+  vFechaFinal := fecha_final;
+
+	-- Borrar primero los elementos que estén en ese rango de fechas
+	open c_metodos_pago;
+	fetch c_metodos_pago into v_id_metodo_hechos;
+	while c_metodos_pago%FOUND loop
+		delete from h_metodos_pago where id_metodo_hechos = v_id_metodo_hechos;
+		fetch c_metodos_pago into v_id_metodo_hechos;
+	end loop;
+	close c_metodos_pago;
+
+	-- Actualizar los nuevos valores
+	open c_metodospago;
+	fetch c_metodospago into v_metodo_pagos;
+	while c_metodospago%FOUND loop
+		insert into h_metodos_pago values(seq_h_metodospago.nextval, v_metodo_pagos.id_metodo_pago, v_metodo_pagos.d_comprapk, v_metodo_pagos.id_tiempo, v_metodo_pagos.suma);
+		fetch c_metodospago into v_metodo_pagos;
+	end loop;
+	close c_metodospago;
+
+	commit;
+end actualiza_metodos_pago_hechos;
