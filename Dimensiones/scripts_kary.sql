@@ -180,7 +180,7 @@ PROCEDURE ACTUALIZA_ORDENES_COMPRA
   FROM ordenes_compra oc, d_tiempo t
   WHERE 
   oc.id_tiempo = t.id_tiempo
-  AND oc.fecha BETWEEN vFechaInicial AND vFechaFinal;  
+  AND t.fecha BETWEEN vFechaInicial AND vFechaFinal;  
 
 BEGIN
  vFechaInicial := FECHAINICIAL;
@@ -208,5 +208,17 @@ BEGIN
  
 END ACTUALIZA_ORDENES_COMPRA;
 
+execute ACTUALIZA_ORDENES_COMPRA(to_date('01/01/2017','DD/MM/YYYY'),to_date('05/04/2018','DD/MM/YYYY'));
 
-execute ACTUALIZA_ORDENES_COMPRA();
+
+-- Query para saber a qué proveedor se le han hecho más órdenes de compra en el año
+
+select *
+from (
+	select p.nombre, sum(ho.suma) as "TOTAL_ORDENES"
+	from h_ordenes_compra ho, d_proveedor p, d_tiempo t
+	where ho.id_proveedor = p.id_proveedor
+	and ho.id_tiempo = t.id_tiempo
+	group by p.nombre
+	order by total_ordenes desc)
+where rownum = 1;
