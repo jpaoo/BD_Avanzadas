@@ -113,7 +113,10 @@ AND T.ID_TIEMPO IN (
   SELECT ID_TIEMPO FROM D_TIEMPO WHERE MES=2 and anio = 2017
 )
 
+--query libro con el stock máximo en un mes y año
 
-
-
-SELECT * FROM H_STOCK WHERE ID_TIEMPO IN (SELECT TIME FROM (SELECT MAX(CANTIDAD_TOTAL)AS SUMA, ID_TIEMPO AS TIME FROM H_STOCK GROUP BY(ID_TIEMPO)))
+select titulo, nombre_genero, nombre_autor from d_libros where id_libro=(select id_libro from h_stock where id_tiempo in (select id_tiempo from h_stock where id_tiempo in (
+  select id_tiempo from d_tiempo where mes=3 and anio = 2018
+) ) and cantidad_total = (select max(cantidad_total) from h_stock where id_tiempo in (
+select id_tiempo from d_tiempo where mes=3 and anio = 2018
+)))
