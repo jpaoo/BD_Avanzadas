@@ -191,3 +191,14 @@ begin
 
 	commit;
 end actualiza_metodos_pago_hechos;
+
+# Pregunta 14
+# ¿Qué mes hay más pagos con efectivo?
+
+select * from
+ (select t.mes, count(mp.id_metodo_hechos) as "PAGOS_CON_EFECTIVO"
+ from h_metodos_pago mp, d_tiempo t
+ where mp.id_metodo_pago = 1 and mp.id_tiempo = t.id_tiempo
+ group by(t.mes)
+ order by pagos_con_efectivo desc)
+where rownum = 1;
